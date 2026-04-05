@@ -6,6 +6,33 @@ Guía paso a paso usando solo la web de [Supabase](https://supabase.com/dashboar
 
 ---
 
+## Variables `VITE_SUPABASE_*` (frontend)
+
+Solo hacen falta **dos** para que el panel use **Supabase Auth** y guarde el chat en BD. Deben existir **antes** de `npm run build` (local o en Vercel).
+
+| Variable | Dónde la sacas en Supabase | Ejemplo de valor |
+|----------|----------------------------|------------------|
+| `VITE_SUPABASE_URL` | **Settings → API → Project URL** | `https://TU-REF.supabase.co` |
+| `VITE_SUPABASE_ANON_KEY` | **Settings → API →** pestaña *Legacy* → clave **`anon`** · `public` · Copy | JWT largo que empieza por `eyJ...` |
+
+**Reglas:**
+
+- El prefijo **`VITE_`** es obligatorio: si no, Vite **no** las mete en el bundle y la app cree que no hay Supabase.
+- **Sin espacios** antes/después del `=` en `.env.local`.
+- En **Vercel**, crea las mismas dos variables en **Production** (y Preview si quieres) y luego **Redeploy**; si las añades después del primer deploy, el JS viejo seguirá sin ellas hasta volver a compilar.
+- Este proyecto usa la clave **anon (legacy)** con `@supabase/supabase-js`, no la clave tipo `sb_publishable_...` en el cliente.
+
+**Local:** en `web/.env.local` (no se sube a Git):
+
+```env
+VITE_SUPABASE_URL=https://nohduseuogajjbmrnwul.supabase.co
+VITE_SUPABASE_ANON_KEY=<pega aquí la anon key del dashboard>
+```
+
+(Sustituí la URL si tu proyecto Supabase es otro.)
+
+---
+
 ## Parte A — Supabase
 
 ### A1. Crear el proyecto
