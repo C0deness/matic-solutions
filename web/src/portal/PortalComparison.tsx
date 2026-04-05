@@ -62,7 +62,7 @@ export function PortalComparison() {
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Resumen del periodo (demo)</CardTitle>
+            <CardTitle>Resumen del periodo (ejemplo)</CardTitle>
             <CardDescription>
               Mismas cifras que en el resumen, desglosadas para comité o
               dirección.
@@ -113,8 +113,8 @@ export function PortalComparison() {
           <CardHeader>
             <CardTitle>Reparto visual</CardTitle>
             <CardDescription>
-              Inversión frente a beneficio neto estimado (misma base de datos
-              demo).
+              Inversión frente a beneficio neto estimado (mismos datos de
+              ejemplo en front).
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center">

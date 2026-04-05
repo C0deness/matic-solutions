@@ -160,4 +160,28 @@ El **`user_id`** es el UUID del usuario en **Supabase → Authentication → Use
 
 ## Sin Supabase (modo demo)
 
-Si no definís `VITE_SUPABASE_*` en local ni en Vercel, la app usa **auth demo** y el chat **no** guarda en base de datos (verás la insignia **Auth demo** en el panel).
+Si no definís `VITE_SUPABASE_*` en local ni en Vercel, la app usa **sesión local de prueba** y el chat **no** guarda en base de datos (insignia **Sin Supabase (local)** en el panel).
+
+---
+
+## Comprobar que auth y despliegue son “reales”
+
+### Vercel
+
+1. **Project → Settings → Environment Variables**: deben existir en el entorno de **Production** (y Preview si queréis):
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   - Para el webhook: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `WEBHOOK_SECRET`
+2. Tras añadir o cambiar variables **`VITE_*`**, haced **Redeploy** (el valor se incrusta en el JS en el **build**).
+3. En el panel del proyecto, el último deployment debe estar **Ready**.
+
+### En el panel (navegador)
+
+1. Entrad en `/portal/login` en vuestra URL de Vercel.
+2. Si el build incluye Supabase, veréis la insignia **Cuenta Supabase** (no “Sin Supabase (local)”).
+3. Registro/login deben usar correo/contraseña reales; en **Supabase → Authentication → Users** debe aparecer el usuario.
+4. Una petición en **Nueva implementación** debe crear filas en `client_cases` / `client_case_messages` (Table Editor).
+
+### Qué sigue siendo datos de ejemplo (no es bug)
+
+Resumen, implementaciones, gráficos y comparativa leen **`mockData.ts`** en el front: son **placeholders** hasta que conectéis una API o tablas propias. Eso no afecta a que **auth y chat** sean reales con Supabase.

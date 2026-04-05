@@ -58,7 +58,7 @@ export function PortalImplementations() {
         <CardHeader>
           <CardTitle>Detalle por iniciativa</CardTitle>
           <CardDescription>
-            Horas ahorradas por semana y valor mensual atribuido (demo).
+            Horas ahorradas por semana y valor mensual atribuido (datos de ejemplo).
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -114,7 +114,7 @@ export function PortalImplementations() {
         <CardHeader>
           <CardTitle>Roadmap por implementación</CardTitle>
           <CardDescription>
-            Fases e hitos acordados (demo). Desplegáis cada fase y el detalle
+            Fases e hitos de ejemplo. Desplegáis cada fase y el detalle
             de los hitos al hacer clic.
           </CardDescription>
         </CardHeader>

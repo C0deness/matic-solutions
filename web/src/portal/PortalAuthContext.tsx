@@ -23,7 +23,7 @@ export type PortalUser = {
 type PortalAuthContextValue = {
   user: PortalUser | null;
   isLoading: boolean;
-  /** true = Supabase email/contraseña; false = demo local (sin env). */
+  /** true = Supabase Auth en build (VITE_SUPABASE_*); false = sesión local de prueba sin BD. */
   isSupabaseMode: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (

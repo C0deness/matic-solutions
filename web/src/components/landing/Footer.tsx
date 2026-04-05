@@ -26,7 +26,7 @@ export function Footer() {
             to="/portal/login"
             className="text-sm font-medium text-slate-600 transition-colors duration-200 hover:text-sky-800"
           >
-            Portal cliente (demo)
+            Portal cliente
           </Link>
           <a
             href="mailto:hola@maticaigency.com"

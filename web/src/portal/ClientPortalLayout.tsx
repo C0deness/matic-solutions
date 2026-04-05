@@ -52,7 +52,7 @@ const navItems = [
 
 function PortalSidebar() {
   const { pathname } = useLocation();
-  const { signOut } = usePortalAuth();
+  const { signOut, isSupabaseMode } = usePortalAuth();
 
   return (
     <Sidebar variant="inset" collapsible="icon">
@@ -132,7 +132,9 @@ function PortalSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
         <p className="mt-2 px-2 text-[0.65rem] leading-snug text-muted-foreground group-data-[collapsible=icon]:hidden">
-          Datos demo. En producción conectamos a vuestras métricas acordadas.
+          {isSupabaseMode
+            ? "Acceso con cuenta real (Supabase). Gráficos e implementaciones mostrados son datos de ejemplo hasta conectar vuestras métricas."
+            : "Sin variables VITE_SUPABASE_*: sesión y métricas locales de prueba."}
         </p>
       </SidebarFooter>
       <SidebarRail />
@@ -156,9 +158,16 @@ export function ClientPortalLayout() {
               <span className="truncate text-foreground/80">{user?.email}</span>
               {!isSupabaseMode ? (
                 <Badge variant="secondary" className="shrink-0 text-[0.65rem]">
-                  Auth demo
+                  Sin Supabase (local)
                 </Badge>
-              ) : null}
+              ) : (
+                <Badge
+                  variant="outline"
+                  className="shrink-0 border-emerald-600/40 text-[0.65rem] text-emerald-800 dark:text-emerald-400"
+                >
+                  Cuenta Supabase
+                </Badge>
+              )}
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">

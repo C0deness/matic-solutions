@@ -1,10 +1,14 @@
-/** Datos de demostración — sustituir por API / CRM en producción */
+/**
+ * Métricas, roadmaps y tablas del panel: datos de ejemplo en front.
+ * Auth, registro y chat sí pueden ir contra Supabase (ver PortalAuthContext).
+ * Sustituir por API/CRM cuando tengáis fuentes reales.
+ */
 
 import type { RoadmapPhase } from "@/components/ui/agent-plan";
 
 export const clientProfile = {
   companyName: "Acme Industrial",
-  periodLabel: "Acumulado año en curso (demo)",
+  periodLabel: "Acumulado año en curso (ejemplo)",
 };
 
 export const ytdMetrics = {

@@ -239,7 +239,7 @@ export function PortalDashboard() {
         <CardHeader>
           <CardTitle>Evolución valor vs inversión</CardTitle>
           <CardDescription>
-            Serie mensual (demo): área bajo cada métrica; la línea superior
+            Serie mensual ilustrativa: área bajo cada métrica; la línea superior
             marca el valor exacto del mes.
           </CardDescription>
         </CardHeader>
