@@ -1,0 +1,14 @@
+# Entorno (nunca subir claves)
+.env
+.env.local
+**/.env.local
+**/.env
+
+# Web
+web/node_modules/
+web/dist/
+
+# Clon con repo propio (opcional: clonar aparte con git clone)
+agency-agents/
+
+.DS_Store
