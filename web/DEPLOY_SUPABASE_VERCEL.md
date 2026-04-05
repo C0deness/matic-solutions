@@ -134,7 +134,9 @@ En la misma pantalla de importación, **Environment Variables**, añadí **antes
 | `SUPABASE_SERVICE_ROLE_KEY` | Clave **service_role** (secreta) | Production, Preview, Development |
 | `WEBHOOK_SECRET` | Una cadena larga aleatoria (inventala o generála) | Production, Preview, Development |
 
-**Nota:** Las variables que empiezan por `VITE_` se incrustan en el **bundle del navegador** en el momento del build: son públicas para el cliente (la anon key está pensada para eso gracias a RLS). La **`service_role`** no debe tener prefijo `VITE_` y **solo** la usa la función serverless `/api/webhook-case`.
+**Nota:** Las variables que empiezan por `VITE_` se incrustan en el **bundle del navegador** en el momento del build: son públicas para el cliente (la anon key está pensada para eso gracias a RLS). La **`service_role`** no debe tener prefijo `VITE_` y **solo** la usan las funciones serverless **`/api/webhook-case`** y **`/api/portal-metrics`**.
+
+**Opcional:** `PORTAL_METRICS_SECRET` — si la definís en Vercel, **`/api/portal-metrics`** exige este Bearer en lugar de `WEBHOOK_SECRET` (así podéis rotar o separar integraciones n8n/Make).
 
 Si ya desplegaste sin variables: **Project → Settings → Environment Variables** → añadí las mismas → **Redeploy** el último deployment.
 
@@ -156,6 +158,68 @@ curl -sS -X POST "https://TU-APP.vercel.app/api/webhook-case" \
 ```
 
 El **`user_id`** es el UUID del usuario en **Supabase → Authentication → Users** (columna **UID**).
+
+### C6. API de métricas del portal (`/api/portal-metrics`)
+
+Misma autenticación que el webhook: **`Authorization: Bearer <WEBHOOK_SECRET>`**, o **`PORTAL_METRICS_SECRET`** si está definida. Usa **`SUPABASE_URL`** + **`SUPABASE_SERVICE_ROLE_KEY`** en servidor (ignora RLS y puede escribir en cualquier `user_id`).
+
+**URL:** `POST https://TU-APP.vercel.app/api/portal-metrics`  
+**Cuerpo:** JSON con `action` y `user_id` (UUID de **Authentication → Users**).
+
+| `action` | Efecto |
+|----------|--------|
+| `upsert_dashboard` | Crea o actualiza la fila en `client_dashboard_metrics`. Campos opcionales: `company_name_display`, `period_label`, `hours_saved_ytd`, `estimated_value_eur`, `consultancy_fees_eur`. |
+| `replace_monthly` | Borra todos los puntos mensuales de ese usuario e inserta `points`: `[{ "month_label", "sort_index", "valor_eur", "inversion_eur" }, ...]`. |
+| `upsert_implementation` | Sin `id`: inserta en `client_implementations`. Con `id` (UUID): actualiza esa fila si pertenece al `user_id`. Requiere `name`, `area`, `status` (`active` \| `pilot` \| `closed`). Opcionales: `hours_per_week_saved`, `estimated_monthly_value_eur`, `started_at` (fecha `YYYY-MM-DD`), `roadmap_phases` (JSON, p. ej. `[]`). |
+| `delete_implementation` | Borra por `id` (debe ser del mismo `user_id`). |
+
+Ejemplos `curl`:
+
+```bash
+# KPIs del resumen (YTD)
+curl -sS -X POST "https://TU-APP.vercel.app/api/portal-metrics" \
+  -H "Authorization: Bearer TU_WEBHOOK_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "upsert_dashboard",
+    "user_id": "UUID-USUARIO",
+    "company_name_display": "Mi empresa",
+    "hours_saved_ytd": 120,
+    "estimated_value_eur": 18000,
+    "consultancy_fees_eur": 6000
+  }'
+
+# Gráfico mensual (reemplaza la serie completa)
+curl -sS -X POST "https://TU-APP.vercel.app/api/portal-metrics" \
+  -H "Authorization: Bearer TU_WEBHOOK_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "replace_monthly",
+    "user_id": "UUID-USUARIO",
+    "points": [
+      { "month_label": "Ene", "sort_index": 1, "valor_eur": 5000, "inversion_eur": 2000 },
+      { "month_label": "Feb", "sort_index": 2, "valor_eur": 6200, "inversion_eur": 2100 }
+    ]
+  }'
+
+# Nueva implementación
+curl -sS -X POST "https://TU-APP.vercel.app/api/portal-metrics" \
+  -H "Authorization: Bearer TU_WEBHOOK_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "upsert_implementation",
+    "user_id": "UUID-USUARIO",
+    "name": "Automatización informes",
+    "area": "Finanzas",
+    "status": "active",
+    "hours_per_week_saved": 4.5,
+    "estimated_monthly_value_eur": 1200,
+    "started_at": "2026-01-15",
+    "roadmap_phases": []
+  }'
+```
+
+**Local:** desde la carpeta `web/`, con las mismas variables en `.env.local` (sin `VITE_` en `service_role`), podéis probar con `npx vercel dev` para que existan las rutas `/api/*`.
 
 ---
 
@@ -209,6 +273,6 @@ Si no definís `VITE_SUPABASE_*` en local ni en Vercel, la app usa **sesión loc
 3. Registro/login deben usar correo/contraseña reales; en **Supabase → Authentication → Users** debe aparecer el usuario.
 4. Una petición en **Nueva implementación** debe crear filas en `client_cases` / `client_case_messages` (Table Editor).
 
-### Qué sigue siendo datos de ejemplo (no es bug)
+### Métricas del panel (Supabase)
 
-Resumen, implementaciones, gráficos y comparativa leen **`mockData.ts`** en el front: son **placeholders** hasta que conectéis una API o tablas propias. Eso no afecta a que **auth y chat** sean reales con Supabase.
+Tras aplicar la migración **`20260405200000_portal_metrics_implementations.sql`**, el resumen, gráficos, comparativa e implementaciones leen **`client_dashboard_metrics`**, **`client_monthly_metrics`** y **`client_implementations`** (RLS por `user_id`). Cada usuario nuevo recibe fila en `client_dashboard_metrics` vía trigger. Para actualizar métricas e implementaciones sin SQL manual, usad **`POST /api/portal-metrics`** (arriba, **C6**) con `service_role` en Vercel.

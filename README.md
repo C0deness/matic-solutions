@@ -10,7 +10,7 @@ Monorepo: portal web (Vite + React), migraciones Supabase, documentación de age
 
 1. [vercel.com/new](https://vercel.com/new) → **Import** este repositorio.
 2. **Root Directory** → `web` (no la raíz del monorepo).
-3. Variables de entorno (Production + Preview): `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `WEBHOOK_SECRET`.
+3. Variables de entorno (Production + Preview): `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `WEBHOOK_SECRET` (opcional: `PORTAL_METRICS_SECRET` para `/api/portal-metrics`).
 4. **Deploy**.
 
 `agency-agents/` no está en el repo (clon externo). Las reglas Cursor están en `.cursor/rules/`.
