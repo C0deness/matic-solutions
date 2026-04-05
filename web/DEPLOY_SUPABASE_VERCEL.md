@@ -2,6 +2,8 @@
 
 Guía paso a paso usando solo la web de [Supabase](https://supabase.com/dashboard) y [Vercel](https://vercel.com/dashboard). Tu código del portal está en la carpeta **`web/`** del repo.
 
+**Repositorio GitHub:** [github.com/C0deness/matic-solutions](https://github.com/C0deness/matic-solutions) (importar este repo en Vercel).
+
 ---
 
 ## Parte A — Supabase
